@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Main Quizzler Backend Service
   backend:
     image: adityatorgal17/quizzler-backend:latest
     container_name: quizzler_backend
@@ -11,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data  # Persistent data storage
+      - ./data:/app/data 
     networks:
       - quizzler-network
     healthcheck:
@@ -21,7 +20,6 @@ services:
       retries: 3
       start_period: 40s
 
-  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
@@ -44,7 +42,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # Let's Encrypt SSL Certificates
   certbot:
     image: certbot/certbot:latest
     container_name: quizzler_certbot

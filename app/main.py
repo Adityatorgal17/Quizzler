@@ -1,9 +1,36 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth, quizzes, sessions, results, users, admin, realtime
 
-app = FastAPI(title="Quizzler API", version="1.0.0", description="API for the Quizzler online quiz platform")
+app = FastAPI(
+    title="Quizzler API", 
+    version="1.0.0", 
+    description="API for the Quizzler online quiz platform",
+    root_path="",
+    servers=[
+        {"url": "https://quizzler-backend.adityatorgal.me", "description": "Production"},
+        {"url": "http://localhost:8000", "description": "Development"}
+    ]
+)
 
-# CORS is handled by nginx proxy - no middleware needed
+@app.middleware("http")
+async def proxy_headers_middleware(request: Request, call_next):
+    """Handle proxy headers to ensure HTTPS redirects work correctly"""
+    if "x-forwarded-proto" in request.headers:
+        request.scope["scheme"] = request.headers["x-forwarded-proto"]
+    
+    response = await call_next(request)
+    return response
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://quizzler.adityatorgal.me"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(quizzes.router, prefix="/quizzes", tags=["Quizzes"])
