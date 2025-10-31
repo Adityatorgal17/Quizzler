@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     # JWT Configuration
     jwt_secret: str = os.getenv("JWT_SECRET", "your-fallback-secret-key")
     jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
+    
+    # Gemini AI Configuration
+    gemini_api_key: SecretStr = os.getenv("GEMINI_API_KEY", "")
 
     @property
     def DATABASE_URL(self):

@@ -41,7 +41,7 @@ class BaseMessage(BaseModel):
 class CreateRoomMessage(BaseMessage):
     type: MessageType = MessageType.CREATE_ROOM
     quiz_config: Dict[str, Any] = {
-        "question_time_limit": 30,  # seconds
+        "question_time_limit": 30, 
         "base_points": 100,
         "time_bonus_multiplier": 2
     }
@@ -54,8 +54,8 @@ class NewQuestionMessage(BaseMessage):
     type: MessageType = MessageType.NEW_QUESTION
     question: str
     options: List[str]
-    correct_answer: int  # index of correct option (0-3)
-    time_limit: Optional[int] = 30  # seconds
+    correct_answer: int  
+    time_limit: Optional[int] = 30  
 
 class CloseRoomMessage(BaseMessage):
     type: MessageType = MessageType.CLOSE_ROOM

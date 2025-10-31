@@ -1,7 +1,3 @@
-"""
-Real-time quiz configuration for production scalability
-"""
-
 import os
 from typing import Dict, Any
 

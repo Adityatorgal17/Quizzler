@@ -7,7 +7,6 @@ import logging
 
 router = APIRouter()
 
-# Pydantic models for request/response
 class SignUpRequest(BaseModel):
     email: EmailStr
     password: str
@@ -26,7 +25,6 @@ class AuthResponse(BaseModel):
 async def signup(request: SignUpRequest):
     """Sign up a new user using Supabase Auth"""
     try:
-        # Sign up user with Supabase Auth
         auth_response = supabase.auth.sign_up({
             "email": request.email,
             "password": request.password,
@@ -36,9 +34,8 @@ async def signup(request: SignUpRequest):
                 }
             }
         })
-        
+
         if auth_response.user:
-            # Create user record in our database using Supabase REST API
             user_data = {
                 "id": auth_response.user.id,
                 "name": request.name,
@@ -65,7 +62,6 @@ async def signup(request: SignUpRequest):
             
     except Exception as e:
         logging.error(f"Signup error: {e}")
-        # Check if it's a duplicate email error
         if "already registered" in str(e).lower() or "duplicate" in str(e).lower():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -123,7 +119,6 @@ async def signout(current_user: dict = Depends(get_current_user)):
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
     """Get current user information"""
     try:
-        # Get user from database using Supabase REST API
         users = db.select("users", "*", {"id": current_user["id"]})
         
         if not users:

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import auth, quizzes, sessions, results, users, admin, realtime
+from app.routes import auth, quizzes, sessions, results, users, admin, realtime, chatbot
 
 app = FastAPI(
     title="Quizzler API", 
@@ -25,6 +25,8 @@ async def proxy_headers_middleware(request: Request, call_next):
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://localhost:8080",
+        "http://127.0.0.1:8080", 
         "https://quizzler.adityatorgal.me"
     ],
     allow_credentials=True,
@@ -39,6 +41,7 @@ app.include_router(results.router, prefix="/results", tags=["Results"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(realtime.router, prefix="/realtime", tags=["Live Quiz"])
+app.include_router(chatbot.router, prefix="/chatbot", tags=["Chatbot"])
 
 @app.get("/trivia", tags=["Quizzes"])
 async def get_trivia_quizzes_root(topic: str = None, difficulty: str = None, sort_by: str = "popularity"):
